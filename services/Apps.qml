@@ -32,6 +32,6 @@ Singleton {
 
         property DesktopEntry entry
 
-        command: ["app2unit", "--", `${entry?.id}.desktop`]
+        command: ["xdg-open", `${entry?.id}.desktop`]
     }
 }
