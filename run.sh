@@ -7,4 +7,4 @@ export RULE_NOTIFS='quickshell.service.notifications.warning = false'  # Notific
 export RULE_SNI='quickshell.service.sni.host.warning = false'  # StatusNotifierItem warnings on reload
 export RULE_PROCESS='QProcess: Destroyed while process'  # Long running processes on reload
 
-qs -p $(pwd) --log-rules "$RULE_DBUS;$RULE_NOTIFS;$RULE_SNI"
+qs -p $(dirname "$0") --log-rules "$RULE_DBUS;$RULE_NOTIFS;$RULE_SNI"
