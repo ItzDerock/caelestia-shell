@@ -32,6 +32,6 @@ Singleton {
 
         property DesktopEntry entry
 
-        command: ["xdg-open", `${entry?.id}.desktop`]
+        command: ["gtk-launch", `${entry?.id}.desktop`]
     }
 }
