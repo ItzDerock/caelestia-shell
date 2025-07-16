@@ -48,8 +48,7 @@
       hyprland
       coreutils
       findutils
-    ]
-    ++ lib.optional withCli caelestia-cli;
+    ] ++ lib.optionals withCli caelestia-cli;
 
   fontconfig = makeFontsConf {
     fontDirectories = [material-symbols];
