@@ -29,7 +29,7 @@ StyledListView {
     function stateForText(text: string): string {
         const prefix = GlobalConfig.launcher.actionPrefix;
         if (text.startsWith(prefix)) {
-            for (const action of ["calc", "scheme", "variant"])
+            for (const action of ["calc", "scheme", "variant", "windows"])
                 if (text.startsWith(`${prefix}${action} `))
                     return action;
 
@@ -49,6 +49,8 @@ StyledListView {
             return Schemes.query(text);
         case "variant":
             return M3Variants.query(text);
+        case "windows":
+            return (Windows.windows, Windows.query(text));
         default:
             return Apps.search(text);
         }
@@ -125,6 +127,13 @@ StyledListView {
 
             PropertyChanges {
                 root.delegate: variantItem
+            }
+        },
+        State {
+            name: "windows"
+
+            PropertyChanges {
+                root.delegate: windowItem
             }
         }
     ]
@@ -284,6 +293,14 @@ StyledListView {
 
         VariantItem {
             list: root
+        }
+    }
+
+    Component {
+        id: windowItem
+
+        WindowItem {
+            screenState: root.screenState
         }
     }
 
