@@ -91,7 +91,7 @@ Item {
                         Wallpapers.setWallpaper(currentItem.modelData.path);
                         root.visibilities.launcher = false;
                     } else if (text.startsWith(GlobalConfig.launcher.actionPrefix)) {
-                        if (text.startsWith(`${GlobalConfig.launcher.actionPrefix}calc `))
+                        if (text.startsWith(`${GlobalConfig.launcher.actionPrefix}calc `) || text.startsWith(`${GlobalConfig.launcher.actionPrefix}windows`))
                             currentItem.onClicked();
                         else
                             currentItem.modelData.onClicked(list.currentList);

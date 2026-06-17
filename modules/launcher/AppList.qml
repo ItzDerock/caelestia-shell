@@ -49,7 +49,7 @@ StyledListView {
         const text = search.text;
         const prefix = GlobalConfig.launcher.actionPrefix;
         if (text.startsWith(prefix)) {
-            for (const action of ["calc", "scheme", "variant"])
+            for (const action of ["calc", "scheme", "variant", "windows"])
                 if (text.startsWith(`${prefix}${action} `))
                     return action;
 
@@ -103,6 +103,14 @@ StyledListView {
             PropertyChanges {
                 model.values: M3Variants.query(search.text)
                 root.delegate: variantItem
+            }
+        },
+        State {
+            name: "windows"
+
+            PropertyChanges {
+                model.values: (Windows.windows, Windows.query(search.text))
+                root.delegate: windowItem
             }
         }
     ]
@@ -254,6 +262,14 @@ StyledListView {
 
         VariantItem {
             list: root
+        }
+    }
+
+    Component {
+        id: windowItem
+
+        WindowItem {
+            visibilities: root.visibilities
         }
     }
 }
