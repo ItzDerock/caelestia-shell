@@ -112,7 +112,7 @@ StyledWindow {
     HyprlandFocusGrab {
         id: focusGrab
 
-        active: {
+        readonly property bool want: {
             const s = root.screenState;
             const conf = root.contentItem.Config;
             if ((s.launcher && conf.launcher.enabled) || (s.session && conf.session.enabled) || (s.sidebar && conf.sidebar.enabled))
@@ -123,8 +123,40 @@ StyledWindow {
                 return true;
             return false;
         }
+
+        property bool allowGrab: true
+        property double armedAt: 0
+        property int reArmTries: 0
+
+        active: allowGrab && want
         windows: [root]
+
+        onWantChanged: {
+            if (!want) {
+                allowGrab = true;
+                reArmTries = 0;
+                reArmTimer.stop();
+            }
+        }
+        onActiveChanged: {
+            if (active)
+                armedAt = Date.now();
+        }
         onCleared: {
+            if (Date.now() - armedAt < 100) {
+                // Spurious clear: a window holding pointer/focus (e.g. Wine/XWayland
+                // apps that capture the mouse) makes Hyprland clear the grab the same
+                // frame it arms, which would instantly close the drawer. A real
+                // click-outside cannot happen that fast, so disarm and retry a few
+                // times once focus settles; if it keeps clearing, leave the grab off
+                // (drawer stays open, dismiss via Esc/selection).
+                allowGrab = false;
+                if (reArmTries < 3) {
+                    reArmTries++;
+                    reArmTimer.restart();
+                }
+                return;
+            }
             root.screenState.launcher = false;
             root.screenState.session = false;
             root.screenState.sidebar = false;
@@ -132,6 +164,13 @@ StyledWindow {
             panels.popouts.hasCurrent = false;
             bar.closeTray();
         }
+    }
+
+    Timer {
+        id: reArmTimer
+
+        interval: 350
+        onTriggered: focusGrab.allowGrab = true
     }
 
     StyledRect {
